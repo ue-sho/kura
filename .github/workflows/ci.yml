@@ -23,13 +23,22 @@ jobs:
         if: steps.setup-rye.outputs.cache-hit != 'true'
         run: rye sync
 
+      - name: Cache Codon
+        id: cache-codon
+        uses: actions/cache@v4
+        with:
+          path: ~/.codon
+          key: ${{ runner.os }}-codon
+
       - name: Install Codon
-        run: yes | /bin/bash -c "$(curl -fsSL https://exaloop.io/install.sh)"
+        if: steps.cache-codon.outputs.cache-hit != 'true'
+        run: echo "n" | /bin/bash -c "$(curl -fsSL https://exaloop.io/install.sh)"
+
+      - name: Add Codon to PATH
+        run: echo "/home/runner/.codon/bin" >> $GITHUB_PATH
 
       - name: Build
-        run: |
-          source /home/runner/.bash_profile
-          make build
+        run: make build
 
       - name: Run test
         run: make test
