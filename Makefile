@@ -19,4 +19,4 @@ lint:
 
 .PHONY: test
 test:
-	rye test
+	PYTHONPATH=. rye test
