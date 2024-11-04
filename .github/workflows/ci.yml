@@ -2,43 +2,18 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    types: [ opened, synchronize ]
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        id: setup-rye
-        uses: eifinger/setup-rye@v3
-        with:
-          enable-cache: true
-          version: '0.34.0'
-
-      - name: Install python dependencies
-        if: steps.setup-rye.outputs.cache-hit != 'true'
-        run: rye sync
-
-      - name: Cache Codon
-        id: cache-codon
-        uses: actions/cache@v4
-        with:
-          path: ~/.codon
-          key: ${{ runner.os }}-codon
-
-      - name: Install Codon
-        if: steps.cache-codon.outputs.cache-hit != 'true'
-        run: echo "n" | /bin/bash -c "$(curl -fsSL https://exaloop.io/install.sh)"
-
-      - name: Add Codon to PATH
-        run: echo "/home/runner/.codon/bin" >> $GITHUB_PATH
-
-      - name: Build
-        run: make build
-
-      - name: Run test
-        run: make test
+      - uses: actions/setup-go@v5
+      - name: Test
+        run: go test ./...
