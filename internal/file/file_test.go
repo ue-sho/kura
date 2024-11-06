@@ -9,8 +9,6 @@ import (
 )
 
 func TestFile(t *testing.T) {
-	t.Parallel()
-
 	// Arrange
 	db, err := server.NewKuraDB(path.Join(t.TempDir(), "filetest"), 400)
 	if err != nil {
