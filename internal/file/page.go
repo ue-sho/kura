@@ -10,10 +10,10 @@ type Page struct {
 }
 
 const (
-	int32Size = 4 // int32 is 4 bytes
-	int16Size = 2 // int16 is 2 bytes
-	boolSize  = 1 // boolean is 1 byte
-	dateSize  = 8 // date represented as int64 (8 bytes for Unix timestamp)
+	Int32Size = 4 // int32 is 4 bytes
+	Int16Size = 2 // int16 is 2 bytes
+	BoolSize  = 1 // boolean is 1 byte
+	DateSize  = 8 // date represented as int64 (8 bytes for Unix timestamp)
 )
 
 // NewPage creates a new page with the specified block size
@@ -31,24 +31,24 @@ func NewPageFromBytes(b []byte) *Page {
 }
 
 func (p *Page) GetInt(offset int) int32 {
-	return int32(binary.LittleEndian.Uint32(p.byteBuffer[offset : offset+int32Size]))
+	return int32(binary.LittleEndian.Uint32(p.byteBuffer[offset : offset+Int32Size]))
 }
 
 func (p *Page) SetInt(offset int, val int32) {
 	// Performance: Avoids overhead by skipping size checks on each write in high-frequency DB access
 	// Caller responsibility: Client code should ensure data fits, improving system efficiency
-	// if len(p.byteBuffer) < offset+int32Size {
+	// if len(p.byteBuffer) < offset+Int32Size {
 	// 	return
 	// }
-	binary.LittleEndian.PutUint32(p.byteBuffer[offset:offset+int32Size], uint32(val))
+	binary.LittleEndian.PutUint32(p.byteBuffer[offset:offset+Int32Size], uint32(val))
 }
 
 func (p *Page) GetShort(offset int) int16 {
-	return int16(binary.LittleEndian.Uint16(p.byteBuffer[offset : offset+int16Size]))
+	return int16(binary.LittleEndian.Uint16(p.byteBuffer[offset : offset+Int16Size]))
 }
 
 func (p *Page) SetShort(offset int, val int16) {
-	binary.LittleEndian.PutUint16(p.byteBuffer[offset:offset+int16Size], uint16(val))
+	binary.LittleEndian.PutUint16(p.byteBuffer[offset:offset+Int16Size], uint16(val))
 }
 
 func (p *Page) GetBool(offset int) bool {
@@ -64,22 +64,22 @@ func (p *Page) SetBool(offset int, val bool) {
 }
 
 func (p *Page) GetDate(offset int) time.Time {
-	unixTime := int64(binary.LittleEndian.Uint64(p.byteBuffer[offset : offset+dateSize]))
+	unixTime := int64(binary.LittleEndian.Uint64(p.byteBuffer[offset : offset+DateSize]))
 	return time.Unix(unixTime, 0)
 }
 
 func (p *Page) SetDate(offset int, date time.Time) {
-	binary.LittleEndian.PutUint64(p.byteBuffer[offset:offset+dateSize], uint64(date.Unix()))
+	binary.LittleEndian.PutUint64(p.byteBuffer[offset:offset+DateSize], uint64(date.Unix()))
 }
 
 func (p *Page) GetBytes(offset int) []byte {
 	length := p.GetInt(offset)
-	return p.byteBuffer[offset+int32Size : offset+int32Size+int(length)]
+	return p.byteBuffer[offset+Int32Size : offset+Int32Size+int(length)]
 }
 
 func (p *Page) SetBytes(offset int, val []byte) {
 	p.SetInt(offset, int32(len(val)))
-	copy(p.byteBuffer[offset+int32Size:], val)
+	copy(p.byteBuffer[offset+Int32Size:], val)
 }
 
 func (p *Page) GetString(offset int) string {

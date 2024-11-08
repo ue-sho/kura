@@ -10,7 +10,7 @@ import (
 
 func TestFile(t *testing.T) {
 	// Arrange
-	db, err := server.NewKuraDB(path.Join(t.TempDir(), "filetest"), 400)
+	db, err := server.NewKuraDB(path.Join(t.TempDir(), "filetest"), 400, 8)
 	if err != nil {
 		t.Fatalf("NewKuraDB: %v", err)
 	}
