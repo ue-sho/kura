@@ -3,13 +3,15 @@ package server
 import (
 	"fmt"
 
+	"kura/internal/buffer"
 	"kura/internal/file"
 	"kura/internal/log"
 )
 
 type KuraDB struct {
-	fileManager *file.FileManager
-	logManager  *log.LogManager
+	fileManager   *file.FileManager
+	logManager    *log.LogManager
+	bufferManager *buffer.BufferManager
 }
 
 func NewKuraDB(dbDir string, blockSize int, bufferSize int) (*KuraDB, error) {
@@ -35,4 +37,8 @@ func (db *KuraDB) FileManager() *file.FileManager {
 
 func (db *KuraDB) LogManager() *log.LogManager {
 	return db.logManager
+}
+
+func (db *KuraDB) BufferManager() *buffer.BufferManager {
+	return db.bufferManager
 }
