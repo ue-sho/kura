@@ -41,22 +41,28 @@ class BufferTest {
 
     @Test
     fun `should assign buffer to a block and retrieve the same block`() {
+        // Arrange
         val block = BlockId(testFile, blockNumber)
+
+        // Act
         buffer.assignToBlock(block)
+
+        // Assert
         assertEquals(block, buffer.getBlock())
     }
 
     @Test
     fun `should modify buffer contents and store the value correctly`() {
+        // Arrange
         val position = 80
         val value = 100
 
-        // Write a value to the buffer
+        // Act: Write a value to the buffer
         val page = buffer.getContents()
         page.setInt(position, value)
         buffer.setModified(1, 0) // Set modified with transaction id 1
 
-        // Verify the value was written correctly
+        // Assert: Verify the value was written correctly
         assertEquals(value, page.getInt(position))
     }
 
@@ -76,13 +82,14 @@ class BufferTest {
 
     @Test
     fun `should store transaction information when buffer is modified`() {
+        // Arrange
         val txNum = 5
         val lsn = 10
 
-        // Set the buffer as modified
+        // Act: Set the buffer as modified
         buffer.setModified(txNum, lsn)
 
-        // Verify the modifying transaction is set correctly
+        // Assert: Verify the modifying transaction is set correctly
         assertEquals(txNum, buffer.getModifyingTransaction())
     }
 

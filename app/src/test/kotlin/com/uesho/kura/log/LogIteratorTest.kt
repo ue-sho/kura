@@ -21,7 +21,7 @@ class LogIteratorTest {
 
     @Test
     fun `should have next when current position is less than block size`() {
-        // Given: Setup the block and mock file manager to simulate a non-empty block
+        // Arrange: Setup the block and mock file manager to simulate a non-empty block
         val block = BlockId(logFile, 0)
         val boundaryPosition = blockSize - 10 // Some position before the end of block
 
@@ -35,16 +35,16 @@ class LogIteratorTest {
         // Create iterator with the mock setup
         val logIterator = LogIterator(fileManager, block)
 
-        // When: Check if there are more records
+        // Act: Check if there are more records
         val hasNext = logIterator.hasNext()
 
-        // Then: Should have next because currentPos < blockSize
+        // Assert: Should have next because currentPos < blockSize
         assertTrue(hasNext)
     }
 
     @Test
     fun `should have next when there are previous blocks`() {
-        // Given: Setup a block with block number > 0 (indicating previous blocks exist)
+        // Arrange: Setup a block with block number > 0 (indicating previous blocks exist)
         val block = BlockId(logFile, 1)
 
         // Mock read to set current position at the end of this block
@@ -56,16 +56,16 @@ class LogIteratorTest {
         // Create iterator with this setup
         val logIterator = LogIterator(fileManager, block)
 
-        // When: Check if there are more records
+        // Act: Check if there are more records
         val hasNext = logIterator.hasNext()
 
-        // Then: Should have next because block.blockNum > 0, even though currentPos = blockSize
+        // Assert: Should have next because block.blockNum > 0, even though currentPos = blockSize
         assertTrue(hasNext)
     }
 
     @Test
     fun `should not have next when at end of last block`() {
-        // Given: Setup block 0 (the first/last block) and position at its end
+        // Arrange: Setup block 0 (the first/last block) and position at its end
         val block = BlockId(logFile, 0)
 
         // Mock read to set current position at the end of the block
@@ -77,16 +77,16 @@ class LogIteratorTest {
         // Create iterator in this terminal state
         val logIterator = LogIterator(fileManager, block)
 
-        // When: Check if there are more records
+        // Act: Check if there are more records
         val hasNext = logIterator.hasNext()
 
-        // Then: No more records because currentPos = blockSize and block.blockNum = 0
+        // Assert: No more records because currentPos = blockSize and block.blockNum = 0
         assertFalse(hasNext)
     }
 
     @Test
     fun `should move to previous block when current block is exhausted`() {
-        // Given: Setup iterator with current position at the end of a non-first block
+        // Arrange: Setup iterator with current position at the end of a non-first block
         val block = BlockId(logFile, 1)
 
         // Set the initial read to position at end of block
@@ -103,10 +103,10 @@ class LogIteratorTest {
 
         val logIterator = LogIterator(fileManager, block)
 
-        // When: Call next() which should move to previous block since we're at the end
+        // Act: Call next() which should move to previous block since we're at the end
         logIterator.next()
 
-        // Then: Should have read the previous block
+        // Assert: Should have read the previous block
         verify {
             fileManager.read(BlockId(logFile, 0), any())
         }
@@ -114,7 +114,7 @@ class LogIteratorTest {
 
     @Test
     fun `should read log record from current position`() {
-        // Given: Setup block and test record
+        // Arrange: Setup block and test record
         val block = BlockId(logFile, 0)
         val testRecord = "test log".toByteArray()
         val recordPosition = blockSize - testRecord.size - Int.SIZE_BYTES
@@ -128,10 +128,10 @@ class LogIteratorTest {
 
         val logIterator = LogIterator(fileManager, block)
 
-        // When: Get the next record
+        // Act: Get the next record
         val record = logIterator.next()
 
-        // Then: Should get our test record
+        // Assert: Should get our test record
         assertArrayEquals(testRecord, record)
     }
 }

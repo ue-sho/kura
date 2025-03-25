@@ -28,13 +28,13 @@ class LogManagerTest {
 
     @Test
     fun `should create new log file when it does not exist`() {
-        // Given
+        // Arrange
         every { fileManager.length(logFile) } returns 0
 
-        // When
+        // Act
         LogManager(fileManager, logFile)
 
-        // Then
+        // Assert
         verify {
             fileManager.append(logFile)
             fileManager.write(any(), any())
@@ -43,32 +43,32 @@ class LogManagerTest {
 
     @Test
     fun `should append log record and return incremented LSN`() {
-        // Given
+        // Arrange
         val logRecord = "test log".toByteArray()
         val pageSlot = slot<Page>()
         every { fileManager.write(any(), capture(pageSlot)) } answers { }
 
-        // When
+        // Act
         val lsn1 = logManager.append(logRecord)
         val lsn2 = logManager.append(logRecord)
 
-        // Then
+        // Assert
         assertEquals(1, lsn1)
         assertEquals(2, lsn2)
     }
 
     @Test
     fun `should create new block when current block is full`() {
-        // Given
+        // Arrange
         val largeRecord = ByteArray(blockSize - Int.SIZE_BYTES)
         val blockIdSlot = slot<BlockId>()
         every { fileManager.append(logFile) } returns BlockId(logFile, 1)
         every { fileManager.write(capture(blockIdSlot), any()) } answers { }
 
-        // When
+        // Act
         logManager.append(largeRecord)
 
-        // Then
+        // Assert
         verify {
             fileManager.append(logFile)
             fileManager.write(any(), any())
@@ -77,14 +77,14 @@ class LogManagerTest {
 
     @Test
     fun `should flush log records when requested`() {
-        // Given
+        // Arrange
         val logRecord = "test log".toByteArray()
         val lsn = logManager.append(logRecord)
 
-        // When
+        // Act
         logManager.flush(lsn)
 
-        // Then
+        // Assert
         verify(exactly = 2) {
             fileManager.write(any(), any())
         }
