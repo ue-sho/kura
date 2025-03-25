@@ -1,28 +1,7 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+# Ignore Gradle project-specific cache directory
+.gradle
 
-# Test binary, built with `go test -c`
-*.test
+# Ignore Gradle build output directory
+build
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# env file
-.env
-
-# VSCode
-.vscode/
-
-# Test files
-testfile
+.kotlin
