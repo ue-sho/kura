@@ -27,8 +27,25 @@ class Buffer(
      * Returns the page stored in this buffer.
      * @return the page
      */
+    fun contents(): Page {
+        return contents
+    }
+
+    /**
+     * Returns the page stored in this buffer.
+     * @return the page
+     */
     fun getContents(): Page {
         return contents
+    }
+
+    /**
+     * Returns a reference to the disk block
+     * allocated to the buffer.
+     * @return a reference to a disk block
+     */
+    fun block(): BlockId? {
+        return blockId
     }
 
     /**
