@@ -1,4 +1,4 @@
-package com.uesho.kura.file
+package com.kura.file
 
 /**
  * A block identifier that uniquely identifies a block in the database.

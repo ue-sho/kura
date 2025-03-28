@@ -1,8 +1,8 @@
-package com.uesho.kura.buffer
+package com.kura.buffer
 
-import com.uesho.kura.file.BlockId
-import com.uesho.kura.file.FileManager
-import com.uesho.kura.log.LogManager
+import com.kura.file.BlockId
+import com.kura.file.FileManager
+import com.kura.log.LogManager
 
 /**
  * Manages the pinning and unpinning of buffers to blocks.

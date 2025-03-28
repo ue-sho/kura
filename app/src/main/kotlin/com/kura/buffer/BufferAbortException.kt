@@ -1,4 +1,4 @@
-package com.uesho.kura.buffer
+package com.kura.buffer
 
 /**
  * A runtime exception indicating that the transaction

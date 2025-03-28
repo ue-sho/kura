@@ -1,4 +1,4 @@
-package com.uesho.kura.file
+package com.kura.file
 
 import java.io.File
 import java.io.IOException

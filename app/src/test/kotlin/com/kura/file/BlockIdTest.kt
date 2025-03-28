@@ -1,4 +1,4 @@
-package com.uesho.kura.file
+package com.kura.file
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

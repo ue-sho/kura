@@ -1,8 +1,8 @@
-package com.uesho.kura.log
+package com.kura.log
 
-import com.uesho.kura.file.BlockId
-import com.uesho.kura.file.FileManager
-import com.uesho.kura.file.Page
+import com.kura.file.BlockId
+import com.kura.file.FileManager
+import com.kura.file.Page
 
 /**
  * The log manager, which is responsible for writing log records into a log file.

@@ -1,8 +1,8 @@
-package com.uesho.kura.log
+package com.kura.log
 
-import com.uesho.kura.file.BlockId
-import com.uesho.kura.file.FileManager
-import com.uesho.kura.file.Page
+import com.kura.file.BlockId
+import com.kura.file.FileManager
+import com.kura.file.Page
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
