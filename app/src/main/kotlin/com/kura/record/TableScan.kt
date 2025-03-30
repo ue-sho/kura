@@ -2,6 +2,8 @@ package com.kura.record
 
 import java.sql.Types
 import com.kura.file.BlockId
+import com.kura.query.Constant
+import com.kura.query.UpdateScan
 import com.kura.transaction.Transaction
 
 /**
@@ -12,7 +14,7 @@ class TableScan(
     private val transaction: Transaction,
     tableName: String,
     private val layout: Layout
-) {
+) : UpdateScan {
 
     private lateinit var recordPage: RecordPage
     private var currentSlot: Int = -1
@@ -28,11 +30,11 @@ class TableScan(
 
     // Methods that implement Scan
 
-    fun beforeFirst() {
+    override fun beforeFirst() {
         moveToBlock(0)
     }
 
-    fun next(): Boolean {
+    override fun next(): Boolean {
         currentSlot = recordPage.nextAfter(currentSlot)
         while (currentSlot < 0) {
             if (atLastBlock()) {
@@ -44,19 +46,27 @@ class TableScan(
         return true
     }
 
-    fun getInt(fieldName: String): Int {
+    override fun getInt(fieldName: String): Int {
         return recordPage.getInt(currentSlot, fieldName)
     }
 
-    fun getString(fieldName: String): String {
+    override fun getString(fieldName: String): String {
         return recordPage.getString(currentSlot, fieldName)
     }
 
-    fun hasField(fieldName: String): Boolean {
+    override fun getVal(fieldName: String): Constant {
+        return if (layout.schema().type(fieldName) == Types.INTEGER) {
+            Constant(getInt(fieldName))
+        } else {
+            Constant(getString(fieldName))
+        }
+    }
+
+    override fun hasField(fieldName: String): Boolean {
         return layout.schema().hasField(fieldName)
     }
 
-    fun close() {
+    override fun close() {
         if (::recordPage.isInitialized) {
             transaction.unpin(recordPage.block())
         }
@@ -64,15 +74,23 @@ class TableScan(
 
     // Methods that implement UpdateScan
 
-    fun setInt(fieldName: String, value: Int) {
+    override fun setInt(fieldName: String, value: Int) {
         recordPage.setInt(currentSlot, fieldName, value)
     }
 
-    fun setString(fieldName: String, value: String) {
+    override fun setString(fieldName: String, value: String) {
         recordPage.setString(currentSlot, fieldName, value)
     }
 
-    fun insert() {
+    override fun setVal(fieldName: String, value: Constant) {
+        if (layout.schema().type(fieldName) == Types.INTEGER) {
+            setInt(fieldName, value.asInt())
+        } else {
+            setString(fieldName, value.asString())
+        }
+    }
+
+    override fun insert() {
         currentSlot = recordPage.insertAfter(currentSlot)
         while (currentSlot < 0) {
             if (atLastBlock()) {
@@ -84,18 +102,18 @@ class TableScan(
         }
     }
 
-    fun delete() {
+    override fun delete() {
         recordPage.delete(currentSlot)
     }
 
-    fun moveToRecordId(recordId: RecordId) {
+    override fun moveToRecordId(recordId: RecordId) {
         close()
         val blk = BlockId(filename, recordId.blockNumber())
         recordPage = RecordPage(transaction, blk, layout)
         currentSlot = recordId.slot()
     }
 
-    fun getRecordId(): RecordId {
+    override fun getRecordId(): RecordId {
         return RecordId(recordPage.block().blockNum, currentSlot)
     }
 
