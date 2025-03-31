@@ -23,4 +23,7 @@ interface RemoteResultSet : Remote {
 
     @Throws(RemoteException::class)
     fun close()
+
+    @Throws(RemoteException::class)
+    fun getMetaData(): RemoteMetaData
 }

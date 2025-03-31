@@ -91,4 +91,12 @@ class RemoteResultSetImpl : UnicastRemoteObject, RemoteResultSet {
     override fun close() {
         scan.close()
     }
+
+    /**
+     * Returns the metadata associated with this result set.
+     */
+    @Throws(RemoteException::class)
+    override fun getMetaData(): RemoteMetaData {
+        return RemoteMetaDataImpl(schema)
+    }
 }
