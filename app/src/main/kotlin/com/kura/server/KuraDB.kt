@@ -4,6 +4,11 @@ import com.kura.buffer.BufferManager
 import com.kura.file.FileManager
 import com.kura.log.LogManager
 import com.kura.metadata.MetadataManager
+import com.kura.plan.BasicQueryPlanner
+import com.kura.plan.BasicUpdatePlanner
+import com.kura.plan.QueryPlanner
+import com.kura.plan.UpdatePlanner
+import com.kura.plan.Planner
 import com.kura.transaction.Transaction
 import java.io.File
 
@@ -21,6 +26,7 @@ class KuraDB {
     private val bufferManager: BufferManager
     private val logManager: LogManager
     private var metadataManager: MetadataManager? = null
+    private var planner: Planner? = null
 
     /**
      * A constructor useful for debugging.
@@ -50,6 +56,9 @@ class KuraDB {
             transaction.recover()
         }
         metadataManager = MetadataManager(isNew, transaction)
+        val queryPlanner: QueryPlanner = BasicQueryPlanner(metadataManager!!)
+        val updatePlanner: UpdatePlanner = BasicUpdatePlanner(metadataManager!!)
+        planner = Planner(queryPlanner, updatePlanner)
         transaction.commit()
     }
 
@@ -65,6 +74,10 @@ class KuraDB {
         return metadataManager
     }
 
+    fun planner(): Planner? {
+        return planner
+    }
+
     // These methods aid in debugging
     fun fileManager(): FileManager {
         return fileManager
@@ -74,7 +87,7 @@ class KuraDB {
         return logManager
     }
 
-    fun bufferManager(): BufferManager {
+    fun  bufferManager(): BufferManager {
         return bufferManager
     }
 }
