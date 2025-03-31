@@ -57,3 +57,31 @@ tasks.register<JavaExec>("runClient") {
     classpath = sourceSets["main"].runtimeClasspath
     standardInput = System.`in` // 標準入力をアプリケーションに渡す
 }
+
+// クライアント用の実行可能JARファイルを作成するタスク
+tasks.register<Jar>("clientJar") {
+    group = "build"
+    description = "Assembles a jar archive containing the KuraDB SQL client application."
+    archiveBaseName.set("kura-sql-client")
+    archiveClassifier.set("")
+
+    manifest {
+        attributes(
+            "Main-Class" to "sample.kura_client.KuraSQLClient",
+            "Implementation-Title" to "KuraDB SQL Client",
+            "Implementation-Version" to project.version
+        )
+    }
+
+    // メインのソースコードとリソースを含める
+    from(sourceSets["main"].output)
+
+    // 依存関係を含める
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
+
+    // 重複するファイルを除外
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
