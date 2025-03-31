@@ -11,6 +11,22 @@ class Term(
     private val rhs: Expression
 ) {
     /**
+     * Returns the left-hand side expression of this term.
+     * @return the left-hand side expression
+     */
+    fun lhs(): Expression {
+        return lhs
+    }
+
+    /**
+     * Returns the right-hand side expression of this term.
+     * @return the right-hand side expression
+     */
+    fun rhs(): Expression {
+        return rhs
+    }
+
+    /**
      * Return true if both of the term's expressions
      * evaluate to the same constant,
      * with respect to the specified scan.

@@ -17,6 +17,22 @@ class Constant : Comparable<Constant> {
         this.strVal = strVal
     }
 
+    /**
+     * Returns the integer value of this constant.
+     * @return the integer value
+     */
+    fun intValue(): Int {
+        return intVal ?: 0
+    }
+
+    /**
+     * Returns the string value of this constant.
+     * @return the string value
+     */
+    fun stringValue(): String {
+        return strVal ?: ""
+    }
+
     fun asInt(): Int {
         return intVal ?: 0
     }

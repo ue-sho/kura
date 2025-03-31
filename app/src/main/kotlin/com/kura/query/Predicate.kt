@@ -23,6 +23,14 @@ class Predicate {
     }
 
     /**
+     * Returns the list of terms in this predicate.
+     * @return the list of terms
+     */
+    fun terms(): List<Term> {
+        return terms
+    }
+
+    /**
      * Modifies the predicate to be the conjunction of
      * itself and the specified predicate.
      * @param predicate the other predicate

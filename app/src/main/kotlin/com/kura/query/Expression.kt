@@ -38,6 +38,14 @@ class Expression {
     }
 
     /**
+     * Return true if the expression is a constant.
+     * @return true if the expression denotes a constant
+     */
+    fun isConstant(): Boolean {
+        return value != null
+    }
+
+    /**
      * Return the constant corresponding to a constant expression,
      * or null if the expression does not
      * denote a constant.
