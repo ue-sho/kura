@@ -5,6 +5,7 @@ import com.kura.query.Scan
 import com.kura.record.Schema
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -34,6 +35,12 @@ class ProjectPlanTest {
         every { anyConstructed<Schema>().add(any(), any()) } just Runs
 
         projectPlan = ProjectPlan(plan, fieldList)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        // テスト終了後にすべてのモックをクリア
+        unmockkAll()
     }
 
     @Test
