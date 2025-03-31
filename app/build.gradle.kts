@@ -48,3 +48,12 @@ tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+// KuraSQLClientアプリケーションを実行するタスク
+tasks.register<JavaExec>("runClient") {
+    group = "application"
+    description = "Run KuraDB SQL client application"
+    mainClass = "sample.kura_client.KuraSQLClient"
+    classpath = sourceSets["main"].runtimeClasspath
+    standardInput = System.`in` // 標準入力をアプリケーションに渡す
+}
