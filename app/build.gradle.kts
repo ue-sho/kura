@@ -49,16 +49,26 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-// KuraSQLClientアプリケーションを実行するタスク
+tasks.named<Jar>("jar") {
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+}
+
+// Task to run the KuraSQL client application
 tasks.register<JavaExec>("runClient") {
     group = "application"
     description = "Run KuraDB SQL client application"
     mainClass = "sample.kura_client.KuraSQLClient"
     classpath = sourceSets["main"].runtimeClasspath
-    standardInput = System.`in` // 標準入力をアプリケーションに渡す
+    standardInput = System.`in` // Pass standard input to the application
 }
 
-// クライアント用の実行可能JARファイルを作成するタスク
+// Task to create an executable JAR file for the client
 tasks.register<Jar>("clientJar") {
     group = "build"
     description = "Assembles a jar archive containing the KuraDB SQL client application."
@@ -73,15 +83,15 @@ tasks.register<Jar>("clientJar") {
         )
     }
 
-    // メインのソースコードとリソースを含める
+    // Include main source code and resources
     from(sourceSets["main"].output)
 
-    // 依存関係を含める
+    // Include dependencies
     dependsOn(configurations.runtimeClasspath)
     from({
         configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
     })
 
-    // 重複するファイルを除外
+    // Exclude duplicate files
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
