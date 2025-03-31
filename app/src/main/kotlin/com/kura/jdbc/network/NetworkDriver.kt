@@ -22,13 +22,13 @@ class NetworkDriver : DriverAdapter() {
         }
 
         try {
-            // URLから接続情報を取得
+            // Get connection info from URL
             val hostAndPort = url.replace("jdbc:kuradb://", "")
             val parts = hostAndPort.split(":")
             val host = parts[0]
             val port = if (parts.size > 1) parts[1].toInt() else 1099
 
-            // RMIレジストリに接続
+            // Connect to RMI registry
             val registry = LocateRegistry.getRegistry(host, port)
             val remoteDriver = registry.lookup("kuradb") as RemoteDriver
             val remoteConnection = remoteDriver.connect()

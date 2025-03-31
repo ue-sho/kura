@@ -28,8 +28,8 @@ class ProjectPlanTest {
         every { planSchema.fields() } returns fieldList
 
         // Mock a real Schema for testing
-        // スキーマの初期化中にaddメソッドが呼び出されるので、
-        // そのメソッドをスパイするためのモックを作成
+        // Since add method is called during schema initialization,
+        // creating a mock to spy on that method
         val testSchema = mockk<Schema>(relaxed = true)
         mockkConstructor(Schema::class)
         every { anyConstructed<Schema>().add(any(), any()) } just Runs
@@ -39,7 +39,7 @@ class ProjectPlanTest {
 
     @AfterEach
     fun tearDown() {
-        // テスト終了後にすべてのモックをクリア
+        // Clear all mocks after test
         unmockkAll()
     }
 
@@ -101,14 +101,14 @@ class ProjectPlanTest {
 
     @Test
     fun `schema should contain only fields in field list`() {
-        // ProjectPlanは初期化時にschema.add()を呼び出すので、
-        // 初期化が成功したかどうかを確認する
+        // ProjectPlan calls schema.add() during initialization,
+        // verify that initialization succeeded
 
-        // Arrange: spyにしてモックSchema.addの呼び出しを検証する
+        // Arrange: use spy to verify the mock Schema.add call
         val constructedSchema = mockk<Schema>(relaxed = true)
         val schemaSlot = slot<Schema>()
 
-        // Act & Assert: ProjectPlanの初期化中に、各フィールドに対してadd()が呼び出されることを検証
+        // Act & Assert: ProjectPlan's initialization, verify that each field is added
         for (field in fieldList) {
             verify { anyConstructed<Schema>().add(field, planSchema) }
         }

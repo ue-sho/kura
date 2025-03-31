@@ -60,12 +60,12 @@ class NetworkResultSet(private val remoteResultSet: RemoteResultSet) : ResultSet
     }
 
     override fun getObject(columnLabel: String): Any {
-        // 最も近い型に変換を試みる
+        // Try to convert to the closest type
         try {
             val intValue = remoteResultSet.getInt(columnLabel)
             return intValue
         } catch (e: Exception) {
-            // 整数でない場合は文字列として取得
+            // If not an integer, get as string
             try {
                 return remoteResultSet.getString(columnLabel)
             } catch (e2: Exception) {

@@ -56,6 +56,6 @@ class RemoteStatementImpl : UnicastRemoteObject, RemoteStatement {
 
     @Throws(RemoteException::class)
     override fun close() {
-        // 実装なし
+        // Not implemented
     }
 }

@@ -57,11 +57,11 @@ class Planner(
 
     // Kura does not verify queries, although it should.
     private fun verifyQuery(data: QueryData) {
-        // 実装しない
+        // Not implemented
     }
 
     // Kura does not verify updates, although it should.
     private fun verifyUpdate(data: Any) {
-        // 実装しない
+        // Not implemented
     }
 }
