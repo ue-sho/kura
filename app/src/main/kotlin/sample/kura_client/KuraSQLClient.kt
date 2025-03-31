@@ -116,10 +116,15 @@ object KuraSQLClient {
                 return
             }
 
+            // カラム名の配列を作成
+            val columnNames = Array(columnCount) { i ->
+                metaData.getColumnName(i + 1)
+            }
+
             // カラム名を表示
-            for (i in 1..columnCount) {
-                print(metaData.getColumnName(i))
-                if (i < columnCount) print(" | ")
+            for (i in 0 until columnCount) {
+                print(columnNames[i])
+                if (i < columnCount - 1) print(" | ")
             }
             println("\n" + "-".repeat(40))
 
@@ -127,23 +132,16 @@ object KuraSQLClient {
             var rowCount = 0
             while (rs.next()) {
                 rowCount++
-                for (i in 1..columnCount) {
-                    // getObjectは実装されていない可能性があるので、型に応じて個別に取得
-                    val value = try {
-                        rs.getString(i) ?: "NULL"
-                    } catch (e: SQLException) {
-                        try {
-                            rs.getInt(i).toString()
-                        } catch (e2: SQLException) {
-                            try {
-                                if (rs.getBoolean(i)) "true" else "false"
-                            } catch (e3: SQLException) {
-                                "ERROR"
-                            }
-                        }
+                for (i in 0 until columnCount) {
+                    // 列名を使用してデータを取得
+                    val columnName = columnNames[i]
+                    val value = if (columnName == "id") {
+                        rs.getInt(columnName)
+                    } else {
+                        rs.getString(columnName)
                     }
                     print(value)
-                    if (i < columnCount) print(" | ")
+                    if (i < columnCount - 1) print(" | ")
                 }
                 println()
             }
