@@ -68,6 +68,15 @@ tasks.register<JavaExec>("runClient") {
     standardInput = System.`in` // Pass standard input to the application
 }
 
+// Task to run the SampleSQL verification program
+tasks.register<JavaExec>("runSampleSQL") {
+    group = "application"
+    description = "Run SampleSQL: bulk-load ~1M records and verify SQL queries"
+    mainClass = "sample.sample_sql.SampleSQL"
+    classpath = sourceSets["main"].runtimeClasspath
+    jvmArgs = listOf("-Xmx2g")
+}
+
 // Task to create an executable JAR file for the client
 tasks.register<Jar>("clientJar") {
     group = "build"
