@@ -8,6 +8,8 @@ Kura is a database management system built from scratch in Kotlin, reimplementin
 
 ## Reference Implementation (SimpleDB)
 
+参考実装のSimpleDBは `../simple-db/` に配置。新機能を実装する際はSimpleDBの対応コードを参照すること。
+
 When implementing new features, refer to the corresponding SimpleDB (Java) code. The package mapping is:
 
 | SimpleDB (Java)              | Kura (Kotlin)                     | Status |
@@ -22,10 +24,10 @@ When implementing new features, refer to the corresponding SimpleDB (Java) code.
 | `simpledb/parse/`            | `com.kura.parse/`                 | Done |
 | `simpledb/plan/`             | `com.kura.plan/`                  | Done |
 | `simpledb/index/hash/`       | `com.kura.index/hash/`            | Done |
-| `simpledb/index/btree/`      | -                                 | Not yet |
-| `simpledb/index/planner/`    | -                                 | Not yet |
-| `simpledb/index/query/`      | -                                 | Not yet |
-| `simpledb/materialize/`      | -                                 | Not yet |
+| `simpledb/index/btree/`      | `com.kura.index/btree/`           | Done |
+| `simpledb/index/planner/`    | `com.kura.index/planner/`         | Done |
+| `simpledb/index/query/`      | `com.kura.index/query/`           | Done |
+| `simpledb/materialize/`      | `com.kura.materialize/`           | Done |
 | `simpledb/multibuffer/`      | -                                 | Not yet |
 | `simpledb/opt/`              | -                                 | Not yet |
 | `simpledb/jdbc/`             | `com.kura.jdbc/`                  | Done |
