@@ -52,6 +52,9 @@ When implementing new features, refer to the corresponding SimpleDB (Java) code.
 # Start the SQL client (requires server running)
 ./gradlew runClient
 
+# Bulk-load ~1M records and verify queries (requires -Xmx2g, runs standalone)
+./gradlew runSampleSQL
+
 # Build client JAR
 ./gradlew clientJar
 ```
@@ -82,7 +85,7 @@ Metadata (metadata/)                    ← Table/view/index/statistics manageme
     ↓
 Record (record/)                        ← Record layout, schema, table scan
     ↓
-Index (index/)                          ← HashIndex implementation
+Index (index/)                          ← Hash and B-tree index implementations
     ↓
 Transaction (transaction/)              ← ACID guarantees
 ├── concurrency/                        ← SLock/XLock concurrency control
@@ -97,6 +100,29 @@ File (file/)                            ← Block-level disk I/O (BlockId, Page,
 
 **Entry point**: `com.kura.server.StartServer` → `KuraDB` initializes FileManager, LogManager, BufferManager, MetadataManager, and Planner.
 
+## Core Interfaces
+
+The system is built around three key interfaces that tie layers together:
+
+- **`Scan`** (`query/Scan.kt`): Iterator-style interface for reading records (`beforeFirst`, `next`, `getInt`, `getString`, `close`). Extended by `UpdateScan` for write operations. Implementations: `TableScan`, `SelectScan`, `ProjectScan`, `ProductScan`, `IndexSelectScan`, `IndexJoinScan`, `SortScan`, `GroupByScan`, `MergeJoinScan`, `MultibufferProductScan`.
+- **`Plan`** (`plan/Plan.kt`): Represents a query execution plan. `open()` returns a `Scan`. Also provides cost estimation (`blocksAccessed`, `recordsOutput`, `distinctValues`) and `schema()`. Each `Plan` implementation wraps the corresponding `Scan`.
+- **`Index`** (`index/Index.kt`): Abstracts index access (`beforeFirst`, `next`, `getDataRecordId`, `insert`, `delete`). Implementations: `HashIndex`, `BTreeIndex`.
+
+## Query Planner Hierarchy
+
+Three levels of query planning, from simplest to most optimized:
+
+1. **`BasicQueryPlanner`** (`plan/`): Naive cross-product of all tables → select → project.
+2. **`BetterQueryPlanner`** (`plan/`): Tries both orderings for two-table products, picks lower cost.
+3. **`HeuristicQueryPlanner`** (`opt/`, **currently active**): Uses `TablePlanner` to choose optimal join order. Picks lowest-cost table first (H1), then greedily adds tables minimizing output (H2). Leverages `IndexSelectPlan`/`IndexJoinPlan` when indexes exist, falls back to `MultibufferProductPlan`.
+
+## JDBC/RMI Layer
+
+Client-server communication uses Java RMI. The JDBC layer has two sides:
+- **Server** (`jdbc/network/Remote*Impl`): RMI servants wrapping `KuraDB`, `Transaction`, `Planner`
+- **Client** (`jdbc/network/Network*`): Thin wrappers that delegate to RMI stubs
+- **Adapters** (`jdbc/*Adapter`): Partial JDBC interface implementations (unimplemented methods throw exceptions)
+
 ## Key Design Decisions
 
 - **Block size**: 400 bytes (defined in `KuraDB.kt`)
@@ -107,7 +133,22 @@ File (file/)                            ← Block-level disk I/O (BlockId, Page,
 
 ## Source Layout
 
-All source code under `app/src/main/kotlin/com/kura/`. Tests mirror this structure under `app/src/test/kotlin/com/kura/`.
+All source code under `app/src/main/kotlin/com/kura/`. Tests mirror this structure under `app/src/test/kotlin/com/kura/`. Sample programs under `app/src/main/kotlin/sample/`.
+
+## Test Conventions
+
+- Use JUnit 5 `@TempDir` for test data directories (avoids interference between tests)
+- Use MockK for mocking (`mockk<Type>()`, `every`, `verify`)
+- Test names use backtick syntax: `` `should do something when condition` ``
+- Group related tests with `@Nested` inner classes
+- Integration tests (e.g., `TransactionIntegrationTest`) create real components against `@TempDir`
+
+## Custom Exceptions
+
+All extend `RuntimeException`:
+- **`LockAbortException`**: Lock acquisition timeout (concurrency)
+- **`BufferAbortException`**: No available buffers in pool
+- **`BadSyntaxException`**: SQL parse error
 
 ## Supported SQL
 
