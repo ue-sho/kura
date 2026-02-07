@@ -28,7 +28,7 @@ When implementing new features, refer to the corresponding SimpleDB (Java) code.
 | `simpledb/index/planner/`    | `com.kura.index/planner/`         | Done |
 | `simpledb/index/query/`      | `com.kura.index/query/`           | Done |
 | `simpledb/materialize/`      | `com.kura.materialize/`           | Done |
-| `simpledb/multibuffer/`      | -                                 | Not yet |
+| `simpledb/multibuffer/`      | `com.kura.multibuffer/`           | Done |
 | `simpledb/opt/`              | -                                 | Not yet |
 | `simpledb/jdbc/`             | `com.kura.jdbc/`                  | Done |
 | `simpledb/server/`           | `com.kura.server/`                | Done |
