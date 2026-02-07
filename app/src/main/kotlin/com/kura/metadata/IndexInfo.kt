@@ -2,7 +2,7 @@ package com.kura.metadata
 
 import com.kura.index.Index
 import com.kura.index.hash.HashIndex
-// import com.kura.index.btree.BTreeIndex // in case we change to btree indexing
+import com.kura.index.btree.BTreeIndex
 import com.kura.record.Layout
 import com.kura.record.Schema
 import com.kura.transaction.Transaction
