@@ -29,7 +29,7 @@ When implementing new features, refer to the corresponding SimpleDB (Java) code.
 | `simpledb/index/query/`      | `com.kura.index/query/`           | Done |
 | `simpledb/materialize/`      | `com.kura.materialize/`           | Done |
 | `simpledb/multibuffer/`      | `com.kura.multibuffer/`           | Done |
-| `simpledb/opt/`              | -                                 | Not yet |
+| `simpledb/opt/`              | `com.kura.opt/`                   | Done |
 | `simpledb/jdbc/`             | `com.kura.jdbc/`                  | Done |
 | `simpledb/server/`           | `com.kura.server/`                | Done |
 
