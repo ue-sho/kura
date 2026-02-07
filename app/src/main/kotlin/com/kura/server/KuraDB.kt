@@ -4,7 +4,7 @@ import com.kura.buffer.BufferManager
 import com.kura.file.FileManager
 import com.kura.log.LogManager
 import com.kura.metadata.MetadataManager
-import com.kura.plan.BasicQueryPlanner
+import com.kura.opt.HeuristicQueryPlanner
 import com.kura.plan.BasicUpdatePlanner
 import com.kura.plan.QueryPlanner
 import com.kura.plan.UpdatePlanner
@@ -56,7 +56,7 @@ class KuraDB {
             transaction.recover()
         }
         metadataManager = MetadataManager(isNew, transaction)
-        val queryPlanner: QueryPlanner = BasicQueryPlanner(metadataManager!!)
+        val queryPlanner: QueryPlanner = HeuristicQueryPlanner(metadataManager!!)
         val updatePlanner: UpdatePlanner = BasicUpdatePlanner(metadataManager!!)
         planner = Planner(queryPlanner, updatePlanner)
         transaction.commit()
